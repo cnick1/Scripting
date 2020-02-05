@@ -14,7 +14,7 @@ eng.addpath(r'N:\My Drive\School\Masters\Nick Corbin\WIP\FRA Project\FRA-Matlab-
 for job in jobNames:
     # Check if the job has already been ran
     print(job)
-    jobExtension = job.split('_', 1)[1]
+    jobExtension = job.split('_', 3)[3]
     if not os.path.exists('MatlabFigures\dispersionCurve'+ jobExtension + '.png'):
         ret = eng.StressMeasurementFunction(job,cwd)
     else:

@@ -40,14 +40,16 @@ os.chdir("WorkingDirectory")
 
 for job in jobNames: 
 	print('INPUT FILE = %s \n' %job)
-	str='abaqus job=%s int ask=off double cpus=4' %job
-	os.system(str)
-	odb_thread = threading.Thread(target=odb2txt, args=[job])
-	odb_thread.daemon = True
-	odb_thread.start()
-
-odb_thread.join()
-
+	if os.path.isfile('../' + job + '.otp'):
+		print('Output found, skipping job')
+	else:
+		str='abaqus job=%s int ask=off double cpus=4' %job
+		os.system(str)
+		odb_thread = threading.Thread(target=odb2txt, args=[job])
+		odb_thread.daemon = True
+		odb_thread.start()
+if 'odb_thread' in locals():
+	odb_thread.join()
 os.chdir('..')
 ##################################################################### 
 
