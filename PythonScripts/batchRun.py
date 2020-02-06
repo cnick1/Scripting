@@ -49,7 +49,7 @@ for job in jobNames:
 		odb_thread.daemon = True
 		odb_thread.start()
 if 'odb_thread' in locals():
-	odb_thread.join()
+    odb_thread.join()
 os.chdir('..')
 ##################################################################### 
 
