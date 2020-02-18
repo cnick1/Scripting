@@ -1,5 +1,17 @@
 ##################################################################### 
-# Run with "abaqus python batchRun+odb2txt.py"
+######################## abaqusBatchRun.py ##########################
+#####################################################################
+# This script runs Abaqus and the post processing up to where Matlab 
+# takes over. This includes the following:
+#	0) Import packages and define functions
+# 	1) Get list of input files in the directory, make a Working 
+# 		Directory, and move all the input files there.
+# 	2) Iterate through every job, running it in Abaqus and converting
+# 		the odb database to a readable text file.
+# 	3) Move completed jobs out of the Working Directory and into a 
+# 		Completed Jobs directory.
+
+############## 0) Import packages and define functions ##############
 import os, glob, shutil, threading, sys
 from odbAccess import *
 
@@ -17,6 +29,7 @@ def odb2txt(job):
 	dispFile.close()
 	return
 
+########## 1) Get inputs and create working directory ##########
 InputFiles=sorted(glob.glob('*.inp'), key=os.path.getsize) # this will list all the input files in the folder, sorted by size
 
 jobNames = [os.path.splitext(x)[0] for x in InputFiles] # Remove extensions
@@ -38,6 +51,8 @@ for InpFile in InputFiles:
 # Enter working directory and run jobs, then exit working directory
 os.chdir("WorkingDirectory")
 
+
+########### 2) Iterate and run Abaqus and Abaqus otp2txt ###########
 for job in jobNames: 
 	print('INPUT FILE = %s \n' %job)
 	if os.path.isfile('../' + job + '.otp'):
@@ -51,8 +66,8 @@ for job in jobNames:
 if 'odb_thread' in locals():
     odb_thread.join()
 os.chdir('..')
-##################################################################### 
 
+############## 3) Move completed jobs to new directory ############## 
 OutputFiles=sorted(glob.glob('*.otp'), key=os.path.getsize) # this will list all the output files in the folder, sorted by size
 completedJobNames = [os.path.splitext(x)[0] for x in OutputFiles] # Remove extensions
 
@@ -75,7 +90,3 @@ for completedJobName in completedJobNames:
 		# In case the file you asked does not exists!
 		print('Sorry the file you asked does not exists!')
 		print(str(o))
-	
-
-##################################################################### 
-
